@@ -14,13 +14,18 @@
   "author": "sabir koutabi",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "^5.5.2",
     "@types/express": "^4.17.20",
     "@types/node": "^20.8.10",
     "concurrently": "^8.2.2",
     "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "nodemon": "^3.0.1",
     "rimraf": "^5.0.5",
     "typescript": "^5.2.2"
+  },
+  "devDependencies": {
+    "prisma": "^5.5.2"
   }
 }

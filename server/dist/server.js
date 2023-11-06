@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const app = (0, express_1.default)();
 const PORT = 8080;
+require("dotenv").config();
 const cors = require("cors");
 const authRoute = require("./routes/auth");
 app.use(cors());
