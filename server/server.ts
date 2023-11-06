@@ -1,11 +1,11 @@
-import express, { Express, Request, Response } from "express";
+import express from "express";
 const app = express();
-const PORT = 8080;
-require("dotenv").config();
 const cors = require("cors");
 const authRoute = require("./routes/auth");
+const session = require("express-session");
+require("dotenv").config();
 
-
+const PORT = 8080;
 app.use(cors());
 
 app.get("/", (Request, Response) => {

@@ -5,10 +5,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const app = (0, express_1.default)();
-const PORT = 8080;
-require("dotenv").config();
 const cors = require("cors");
 const authRoute = require("./routes/auth");
+const session = require("express-session");
+require("dotenv").config();
+const PORT = 8080;
 app.use(cors());
 app.get("/", (Request, Response) => {
     Response.json({ message: "Hello World!" });
