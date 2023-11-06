@@ -1,30 +1,22 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const router = (0, express_1.Router)();
-const users = [
-    {
-        name: "Sabir",
-        password: 123,
-        email: "sabir@email.com",
-    },
-    {
-        name: "Imam",
-        password: 123,
-        email: "imam@email.com",
-    },
-    {
-        name: "Rime",
-        password: 123,
-        email: "rime@email.com",
-    },
-];
-router.get("/:id", (req, res) => {
-    res.json(users);
-    console.log(req.query);
+router.get("/", (req, res) => {
+    res.send("Hello World!");
 });
-router.delete("/:id", (req, res) => {
-    console.log(req.query);
-    res.json(users);
-});
+router.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { name, password, email } = req.body;
+    console.log(name, password, email);
+    res.status(200).send("User created");
+}));
 module.exports = router;

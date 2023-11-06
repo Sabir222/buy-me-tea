@@ -35,8 +35,25 @@ const Register = () => {
       path: ["verifyPassword"],
     });
 
-  const submitData = (data: FormData) => {
-    console.log("Data is valid and ready to be sent: ", data);
+  const submitData = async (data: FormData) => {
+    // console.log("Data is valid and ready to be sent: ", data);
+    try {
+      const response = await fetch("http://localhost:8080/register", {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      if (response.ok) {
+        const responseData = await response.json();
+        console.log(data);
+      } else {
+        console.log("Failed to create User");
+      }
+    } catch (error) {
+      console.log("Ops bad programmer", error);
+    }
     reset();
   };
 
