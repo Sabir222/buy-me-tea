@@ -1,6 +1,7 @@
 "use client";
 import { Icons } from "@/components/ui/icons";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 import { ZodType, z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,13 +9,13 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 type FormData = {
   email: string;
   password: string;
@@ -23,6 +24,7 @@ type FormData = {
 };
 
 const Register = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const schema: ZodType<FormData> = z
     .object({
       email: z.string().email(),
@@ -34,10 +36,15 @@ const Register = () => {
       message: "Passwords do not match",
       path: ["verifyPassword"],
     });
-
-  const submitData = async (data: FormData) => {
-    // console.log("Data is valid and ready to be sent: ", data);
+  const router = useRouter();
+  const submitData = async (formData: FormData) => {
     try {
+      setIsLoading(true);
+      const data = {
+        ...formData,
+        email: formData.email.toLowerCase(),
+        name: formData.name.toLowerCase(),
+      };
       const response = await fetch("http://localhost:8080/register", {
         method: "POST",
         headers: {
@@ -46,12 +53,16 @@ const Register = () => {
         body: JSON.stringify(data),
       });
       if (response.ok) {
-        const responseData = await response.json();
-        console.log(data);
+        await response.json();
+        setIsLoading(false);
+        toast.success("Registration Successful!");
+        router.push("/login");
       } else {
-        console.log("Failed to create User");
+        toast.error("Registration Failed!");
       }
     } catch (error) {
+      setIsLoading(false);
+      toast.error("Registration Failed!");
       console.log("Ops bad programmer", error);
     }
     reset();
@@ -138,14 +149,11 @@ const Register = () => {
               <span className="text-red-400">Password do not match</span>
             )}
           </div>
-          <Button type="submit" className="w-full">
+          <Button disabled={isLoading} type="submit" className="w-full">
             Create account
           </Button>
         </form>
       </CardContent>
-      {/* <CardFooter>
-        <Button className="w-full">Create account</Button>
-      </CardFooter> */}
     </Card>
   );
 };

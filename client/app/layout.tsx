@@ -1,5 +1,5 @@
 import { Inter as FontSans } from "next/font/google";
-import { Inter } from "next/font/google";
+import { Toaster } from "sonner";
 import "./globals.css";
 import { ThemeProvider } from "@/components/Theme-provider";
 import { cn } from "@/lib/utils";
@@ -40,6 +40,7 @@ export default function RootLayout({
         >
           <Navbar />
           {children}
+          <Toaster richColors />
         </ThemeProvider>
       </body>
     </html>
