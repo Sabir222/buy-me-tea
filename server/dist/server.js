@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const app = (0, express_1.default)();
 const cors = require("cors");
-const authRoute = require("./routes/auth");
+const authRoute = require("./routes/register");
 const session = require("express-session");
 require("dotenv").config();
 const PORT = 8080;

@@ -1,7 +1,7 @@
 import express from "express";
 const app = express();
 const cors = require("cors");
-const authRoute = require("./routes/auth");
+const authRoute = require("./routes/register");
 const session = require("express-session");
 require("dotenv").config();
 
