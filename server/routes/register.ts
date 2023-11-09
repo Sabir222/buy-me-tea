@@ -3,9 +3,6 @@ const router = Router();
 const bcrypt = require("bcrypt");
 
 import prisma from "../libs/prismadb";
-router.get("/", (req, res) => {
-  res.send("Hello World!");
-});
 
 router.post("/", async (req, res) => {
   try {
@@ -18,11 +15,12 @@ router.post("/", async (req, res) => {
         full_name: name,
       },
     });
-
+    console.log({ message: "Registration Successful!", user });
     res.status(201).json({ message: "Registration Successful!", user });
   } catch (error) {
     console.log(error);
     res.status(500).send("Registration Failed!");
   }
 });
+
 module.exports = router;

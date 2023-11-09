@@ -16,9 +16,6 @@ const express_1 = require("express");
 const router = (0, express_1.Router)();
 const bcrypt = require("bcrypt");
 const prismadb_1 = __importDefault(require("../libs/prismadb"));
-router.get("/", (req, res) => {
-    res.send("Hello World!");
-});
 router.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { name, password, email } = req.body;
@@ -30,6 +27,7 @@ router.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 full_name: name,
             },
         });
+        console.log({ message: "Registration Successful!", user });
         res.status(201).json({ message: "Registration Successful!", user });
     }
     catch (error) {
