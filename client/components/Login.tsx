@@ -1,6 +1,8 @@
 "use client";
 import { Icons } from "@/components/ui/icons";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -11,7 +13,44 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useState } from "react";
+
+type FormData = {
+  email: String;
+  password: String;
+};
 const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const router = useRouter();
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+  };
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+  };
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const data: FormData = { email, password };
+    try {
+      const response = await fetch("http://localhost:8080/login", {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      if (response.ok) {
+        toast.success("Logged in successfully");
+        router.push("/");
+      } else {
+        toast.error("Invalid Credentials");
+        console.log("not working dude");
+      }
+    } catch (error) {
+      toast.error("Something went wrong");
+    }
+  };
   return (
     <Card>
       <CardHeader className="space-y-1">
@@ -41,18 +80,31 @@ const Login = () => {
             </span>
           </div>
         </div>
-        <div className="grid gap-2">
-          <Label htmlFor="email">Email</Label>
-          <Input id="email" type="email" placeholder="example@example.com" />
-        </div>
-        <div className="grid gap-2">
-          <Label htmlFor="password">Password</Label>
-          <Input id="password" type="password" />
-        </div>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+          <div className="grid gap-2">
+            <Label htmlFor="email">Email</Label>
+            <Input
+              onChange={handleEmailChange}
+              required
+              id="email"
+              type="email"
+              placeholder="example@example.com"
+            />
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="password">Password</Label>
+            <Input
+              required
+              id="password"
+              type="password"
+              onChange={handlePasswordChange}
+            />
+          </div>
+          <Button type="submit" className="w-full">
+            Log-in
+          </Button>
+        </form>
       </CardContent>
-      <CardFooter>
-        <Button className="w-full">Log-in</Button>
-      </CardFooter>
     </Card>
   );
 };

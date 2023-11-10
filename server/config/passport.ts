@@ -24,6 +24,7 @@ const verifyCallback = async (email: string, password: string, done: any) => {
     });
 
     if (!user || !user.encryptedPassword) {
+      console.log("no user with this email");
       return done(null, false);
     }
     const isCorrectPassword = await bcrypt.compare(
@@ -31,8 +32,11 @@ const verifyCallback = async (email: string, password: string, done: any) => {
       user.encryptedPassword
     );
 
-    if (!isCorrectPassword) return done(null, false);
-
+    if (!isCorrectPassword) {
+      console.log("Password Incorrect");
+      return done(null, false);
+    }
+    console.log("credentials are correct! ");
     return done(null, user);
   } catch (err) {
     return done(err);

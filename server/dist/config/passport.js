@@ -36,11 +36,15 @@ const verifyCallback = (email, password, done) => __awaiter(void 0, void 0, void
             where: { email: email },
         });
         if (!user || !user.encryptedPassword) {
+            console.log("no user with this email");
             return done(null, false);
         }
         const isCorrectPassword = yield bcrypt.compare(password, user.encryptedPassword);
-        if (!isCorrectPassword)
+        if (!isCorrectPassword) {
+            console.log("Password Incorrect");
             return done(null, false);
+        }
+        console.log("credentials are correct! ");
         return done(null, user);
     }
     catch (err) {

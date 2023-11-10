@@ -1,16 +1,26 @@
 "use client";
 import React, { useState } from "react";
 import { Button } from "./ui/button";
+import { toast } from "sonner";
 import Image from "next/image";
 import { Input } from "@/components/ui/input";
+import { ZodType, z } from "zod";
+import { useForm } from "react-hook-form";
 import { Textarea } from "@/components/ui/textarea";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { SmilePlus } from "lucide-react";
 import { Picker } from "emoji-mart";
 import data from "emoji-mart";
+
+type FormData = {
+  message: string;
+  name: string;
+};
 const Card = () => {
   const [toggled, setToggled] = useState(1);
   const [fieldValue, setValueField] = useState("1");
   const [isPikerVisible, setIspickerVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleToggle = (buttonNumber: number) => {
     setToggled(buttonNumber);
@@ -20,6 +30,40 @@ const Card = () => {
   const handleInputChange = (event: any) => {
     setValueField(event.target.value);
   };
+
+  const schema: ZodType<FormData> = z.object({
+    message: z.string().min(3),
+    name: z.string().min(3).max(30),
+  });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({ resolver: zodResolver(schema) });
+
+  const submitData = async (formData: FormData) => {
+    try {
+      setIsLoading(true);
+      const price = parseInt(fieldValue) * 5;
+      const data = { ...formData, price };
+      const response = await fetch("http://localhost:8080/payment", {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        toast.success("Payment successful");
+        setIsLoading(false);
+      }
+    } catch (error) {
+      toast.error("Something went wrong");
+      setIsLoading(false);
+    }
+  };
+
   return (
     <main className="flex items-center justify-center min-h-screen">
       <div className="p-6 border rounded-md bg-card">
@@ -65,6 +109,7 @@ const Card = () => {
                 5
               </Button>
             </div>
+
             <Input
               className="w-10 pl-2 text-center"
               value={fieldValue}
@@ -72,21 +117,41 @@ const Card = () => {
               type="number"
             />
           </div>
-          <Input placeholder="Your name or @twitter (optional)" />
-          <div className="relative w-full">
-            <Textarea placeholder="Say something nice!" />
-            <div className="absolute right-3 bottom-3">
-              <SmilePlus
-                className="cursor-pointer"
-                onClick={() => setIspickerVisible(!isPikerVisible)}
+          <form
+            onSubmit={handleSubmit(submitData)}
+            className="flex flex-col w-full gap-2"
+          >
+            <Input
+              {...register("name")}
+              placeholder="Your name or @twitter (optional)"
+            />
+            {errors.name && (
+              <span className="text-red-400">
+                Please enter minimum 3 characters long name
+              </span>
+            )}
+            <div className="relative w-full">
+              <Textarea
+                {...register("message")}
+                placeholder="Say something nice!"
               />
+              {errors.message && (
+                <span className="text-red-400">
+                  Don&apos;t be shy write something longer
+                </span>
+              )}
+              <div className="absolute right-3 bottom-3">
+                <SmilePlus
+                  className="cursor-pointer"
+                  onClick={() => setIspickerVisible(!isPikerVisible)}
+                />
+              </div>
+              <div className={`${isPikerVisible ? "block" : "hidden"}`}></div>
             </div>
-            <div className={`${isPikerVisible ? "block" : "hidden"}`}></div>
-          </div>
-
-          <Button className="w-full">
-            Support ${parseInt(fieldValue) * 5}
-          </Button>
+            <Button disabled={isLoading} type="submit" className="w-full">
+              Support ${parseInt(fieldValue) * 5}
+            </Button>
+          </form>
         </div>
       </div>
     </main>
