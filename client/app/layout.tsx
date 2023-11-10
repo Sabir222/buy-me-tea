@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   title: "Buy me tea",
   description: "Buy me Tea",
   icons: {
-    icon: "/tea.svg",
+    icon: "/images/logo.png",
   },
 };
 

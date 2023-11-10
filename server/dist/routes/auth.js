@@ -14,9 +14,48 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const router = (0, express_1.Router)();
+const passport_1 = __importDefault(require("../config/passport"));
 const bcrypt = require("bcrypt");
 const prismadb_1 = __importDefault(require("../libs/prismadb"));
-router.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+/*
+ *
+ *
+ *Login
+ *
+ *
+ */
+router.post("/login", passport_1.default.authenticate("local", {
+    failureRedirect: "/failed",
+}), (req, res) => {
+    res.json({
+        status: "success",
+        message: "Authentication successful",
+    });
+});
+router.get("/login", (req, res) => {
+    res.send("hello login route");
+});
+/*
+ *
+ *
+ *Logout
+ *
+ *
+ */
+router.get("/logout", (req, res, next) => {
+    req.logOut((err) => {
+        if (err)
+            return next(err);
+    });
+    res.redirect("/");
+});
+/*
+ *
+ *
+ *Register
+ *
+ */
+router.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { name, password, email } = req.body;
         const encryptedPassword = yield bcrypt.hash(password, 12);

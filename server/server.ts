@@ -1,11 +1,12 @@
-import express from "express";
+import express, { Response, Request, NextFunction } from "express";
 const app = express();
 const cors = require("cors");
-const authRoute = require("./routes/register");
 const paymentRoute = require("./routes/payment");
-const loginRoute = require("./routes/login");
+const authRoute = require("./routes/auth");
+const frontAuth = require("./routes/checkUauthFrontEnd");
 const protectedRoute = require("./routes/protected");
 const session = require("express-session");
+const helmet = require("helmet");
 require("dotenv").config();
 const PORT = 8080;
 import passport from "./config/passport";
@@ -27,28 +28,29 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(helmet());
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use((req: any, res: Response, next: NextFunction) => {
+  console.log(req.session);
+  console.log(req.user);
+  next();
+});
 /*
  *
  *
  */
 
-app.get("/", (req: any, res, next) => {
-  if (req.session.viewCount) {
-    req.session.viewCount++;
-  } else {
-    req.session.viewCount = 1;
-  }
-  res.json(req.session.viewCount);
+app.get("/", (req: Request, res: Response, next) => {
+  res.send("Hello Home Page");
 });
 
-app.use("/register", authRoute);
 app.use("/payment", paymentRoute);
-app.use("/login", loginRoute);
+app.use("/", authRoute);
 app.use("/protected", protectedRoute);
+app.use("/", frontAuth);
 
 /*
  *

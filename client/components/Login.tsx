@@ -22,6 +22,7 @@ type FormData = {
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
@@ -32,6 +33,7 @@ const Login = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data: FormData = { email, password };
+    setIsLoading(true);
     try {
       const response = await fetch("http://localhost:8080/login", {
         method: "POST",
@@ -43,12 +45,15 @@ const Login = () => {
       if (response.ok) {
         toast.success("Logged in successfully");
         router.push("/");
+        setIsLoading(false);
       } else {
         toast.error("Invalid Credentials");
         console.log("not working dude");
+        setIsLoading(false);
       }
     } catch (error) {
       toast.error("Something went wrong");
+      setIsLoading(false);
     }
   };
   return (
@@ -100,7 +105,7 @@ const Login = () => {
               onChange={handlePasswordChange}
             />
           </div>
-          <Button type="submit" className="w-full">
+          <Button disabled={isLoading} type="submit" className="w-full">
             Log-in
           </Button>
         </form>

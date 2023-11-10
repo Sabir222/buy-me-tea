@@ -1,12 +1,10 @@
-import { Router } from "express";
+import { Router, Response, Request } from "express";
 const router = Router();
+import isAuth from "../routes/authMiddleware";
 
-router.get("/", (req, res) => {
-  if (req.isAuthenticated()) {
-    res.send("damn son you are logged in");
-  } else {
-    res.send("damn son you are not logged in");
-  }
+
+router.get("/", isAuth, (req: Request, res: Response) => {
+  res.send("This route is protected");
 });
 
 module.exports = router;
