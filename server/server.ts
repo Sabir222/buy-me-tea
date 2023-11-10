@@ -4,6 +4,7 @@ const cors = require("cors");
 const authRoute = require("./routes/register");
 const paymentRoute = require("./routes/payment");
 const loginRoute = require("./routes/login");
+const protectedRoute = require("./routes/protected");
 const session = require("express-session");
 require("dotenv").config();
 const PORT = 8080;
@@ -47,6 +48,7 @@ app.get("/", (req: any, res, next) => {
 app.use("/register", authRoute);
 app.use("/payment", paymentRoute);
 app.use("/login", loginRoute);
+app.use("/protected", protectedRoute);
 
 /*
  *

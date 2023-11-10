@@ -6,7 +6,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const router = (0, express_1.Router)();
 const passport_1 = __importDefault(require("../config/passport"));
-router.post("/login", passport_1.default.authenticate("local"), (req, res) => {
-    res.json(req.user);
+router.post("/", passport_1.default.authenticate("local", {
+    failureRedirect: "/failed",
+}), (req, res) => {
+    res.json({
+        status: "success",
+        message: "Authentication successful",
+    });
+});
+router.get("/", (req, res) => {
+    res.send("hello login route");
 });
 module.exports = router;

@@ -2,17 +2,23 @@ import prisma from "../libs/prismadb";
 const LocalStrategy = require("passport-local").Strategy;
 // const passport = require("passport");
 //import passport from "passport";
-import passport from 'passport';
+import passport from "passport";
 const bcrypt = require("bcrypt");
 
 /*
  *
  */
-const User = prisma.user;
+
+const customFields = {
+  usernameField: "email",
+  passwordField: "password",
+};
+const user = prisma.user;
 const verifyCallback = async (email: string, password: string, done: any) => {
-  console.log("Verifying user:", email);
+  console.log("Verify callback initiated");
   if (!email || !password) return done(null, false);
   try {
+    console.log("verifyCallback is running and Verifying user:", email);
     const user = await prisma.user.findUnique({
       where: { email: email },
     });
@@ -32,15 +38,18 @@ const verifyCallback = async (email: string, password: string, done: any) => {
     return done(err);
   }
 };
-const Strategy = new LocalStrategy(verifyCallback);
+const Strategy = new LocalStrategy(customFields, verifyCallback);
 passport.use(Strategy);
 
 passport.serializeUser((user: any, done: any) => {
   done(null, user.id);
 });
 passport.deserializeUser((id: any, done: any) => {
-  User.findUnique({ where: { id: id } }).then((user) => {
-    done(null, user).catch((err: any) => done(err));
-  });
+  user
+    .findUnique({ where: { id: id } })
+    .then((user) => {
+      done(null, user);
+    })
+    .catch((err: any) => done(err));
 });
 export default passport;

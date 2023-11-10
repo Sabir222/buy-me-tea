@@ -21,12 +21,17 @@ const bcrypt = require("bcrypt");
 /*
  *
  */
-const User = prismadb_1.default.user;
+const customFields = {
+    usernameField: "email",
+    passwordField: "password",
+};
+const user = prismadb_1.default.user;
 const verifyCallback = (email, password, done) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("Verifying user:", email);
+    console.log("Verify callback initiated");
     if (!email || !password)
         return done(null, false);
     try {
+        console.log("verifyCallback is running and Verifying user:", email);
         const user = yield prismadb_1.default.user.findUnique({
             where: { email: email },
         });
@@ -42,14 +47,17 @@ const verifyCallback = (email, password, done) => __awaiter(void 0, void 0, void
         return done(err);
     }
 });
-const Strategy = new LocalStrategy(verifyCallback);
+const Strategy = new LocalStrategy(customFields, verifyCallback);
 passport_1.default.use(Strategy);
 passport_1.default.serializeUser((user, done) => {
     done(null, user.id);
 });
 passport_1.default.deserializeUser((id, done) => {
-    User.findUnique({ where: { id: id } }).then((user) => {
-        done(null, user).catch((err) => done(err));
-    });
+    user
+        .findUnique({ where: { id: id } })
+        .then((user) => {
+        done(null, user);
+    })
+        .catch((err) => done(err));
 });
 exports.default = passport_1.default;
