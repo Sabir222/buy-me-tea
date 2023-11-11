@@ -17,17 +17,39 @@ const router = (0, express_1.Router)();
 const passport_1 = __importDefault(require("../config/passport"));
 const bcrypt = require("bcrypt");
 const prismadb_1 = __importDefault(require("../libs/prismadb"));
-/*
- *
- *
- *Login
- *
- *
- */
+const jwt = require("jsonwebtoken");
 router.post("/login", passport_1.default.authenticate("local", {
     failureRedirect: "/failed",
-}), (req, res) => {
-    res.json(req.user);
+}), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b;
+    try {
+        const token = jwt.sign({ userid: (_a = req.user) === null || _a === void 0 ? void 0 : _a.id, email: (_b = req.user) === null || _b === void 0 ? void 0 : _b.email }, process.env.SECRET, { expiresIn: "15d" });
+        res.json({ token, user: req.user });
+    }
+    catch (error) {
+        console.error("Token generation error:", error);
+        res.status(500).json({ message: "Token generation failed" });
+    }
+}));
+const verifyJWT = (req, res, next) => {
+    const token = req.headers["x-access-token"];
+    if (!token) {
+        res.send("no token");
+    }
+    else {
+        jwt.verify(token, process.env.SECRET, (err, decoded) => {
+            if (err) {
+                res.json({ auth: false, message: "u failed to auth" });
+            }
+            else {
+                req.user = decoded.user;
+            }
+        });
+        next();
+    }
+};
+router.get("/isUserAuth", verifyJWT, (req, res) => {
+    res.json({ authStatus: " user logged in " });
 });
 router.get("/login", (req, res) => {
     res.send("hello login route");

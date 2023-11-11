@@ -15,6 +15,7 @@ router.get("/checkAuth", (req, res) => {
         res.status(401).json({ authentication: false });
     }
 });
+module.exports = router;
 // const verifyJWT = (req: Request, res: Response, next: NextFunction) => {
 //   const token = req.headers["x-access-token"];
 //   if (!token) {
@@ -34,5 +35,4 @@ router.get("/checkAuth", (req, res) => {
 // };
 // router.get("/checkAuth", verifyJWT, (req: Request, res: Response) => {
 //   res.status(200).json({ auth: true, usr: req.user });
-// });
-module.exports = router;
+// });s

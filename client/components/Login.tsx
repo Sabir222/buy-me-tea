@@ -3,6 +3,8 @@ import { Icons } from "@/components/ui/icons";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import axios from "axios";
+
 import {
   Card,
   CardContent,
@@ -14,11 +16,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
+import { log } from "console";
 
-type FormData = {
-  email: String;
-  password: String;
-};
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -32,23 +31,22 @@ const Login = () => {
   };
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const data: FormData = { email, password };
+    const data = { email, password };
     setIsLoading(true);
     try {
-      const response = await fetch("http://localhost:8080/login", {
-        method: "POST",
+      const response = await axios.post("http://localhost:8080/login", data, {
         headers: {
           "Content-type": "application/json",
         },
-        body: JSON.stringify(data),
       });
-      if (response.ok) {
+
+      if (response.status === 200) {
+        localStorage.setItem("token", response.data.token);
         toast.success("Logged in successfully");
         router.push("/");
         setIsLoading(false);
       } else {
         toast.error("Invalid Credentials");
-        console.log("not working dude");
         setIsLoading(false);
       }
     } catch (error) {

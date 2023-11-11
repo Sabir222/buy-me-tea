@@ -2,7 +2,7 @@ import Card from "@/components/Card";
 
 export default async function Home() {
   return (
-    <main>
+    <main>      
       <Card />
     </main>
   );

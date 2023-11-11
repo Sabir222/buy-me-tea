@@ -6,34 +6,28 @@ import axios from "axios";
 import { Button } from "./ui/button";
 import { Hamburger } from "./Hambuger";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const Navbar = () => {
-  const [logged, setLogged] = useState({});
+  const [logged, setLogged] = useState(false);
   const isAuth = async () => {
     try {
-      const config = {
-        withCredentials: true,
+      const response = await axios.get("http://localhost:8080/isUserAuth", {
         headers: {
-          "Content-Type": "application/json",
+          "x-access-token": localStorage.getItem("token"),
         },
-      };
-      const response = await axios.get(
-        "http://localhost:8080/checkAuth",
-        config
-      );
+        withCredentials: true,
+      });
 
       console.log(response);
       if (response.status === 200) {
-        setLogged(response.data);
+        toast.success("Logged in successfully");
+        setLogged(true);
       }
     } catch (error) {
-      console.log("nop catch");
+      toast.error(`${error}`);
     }
   };
-
-  useEffect(() => {
-    isAuth();
-  }, []);
 
   const router = useRouter();
   return (
@@ -65,6 +59,8 @@ const Navbar = () => {
           <Button variant="outline" className="hidden md:block">
             <Github />
           </Button>
+          <Button onClick={isAuth}>Check auth</Button>
+          <Button onClick={isAuth}>{logged ? "u In" : "u Out"}</Button>
           <div className="md:hidden">
             <Hamburger />
           </div>
