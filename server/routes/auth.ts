@@ -16,10 +16,7 @@ router.post(
     failureRedirect: "/failed",
   }),
   (req: Request, res: Response) => {
-    res.json({
-      status: "success",
-      message: "Authentication successful",
-    });
+    res.json(req.user);
   }
 );
 

@@ -10,6 +10,7 @@ router.get("/checkAuth", (req, res) => {
         res.status(200).send(req.user);
     }
     else {
+        console.log("uuuuuuuuuuuuuuuuuuuuuuu");
         res.status(401).json({ authentication: false });
     }
 });

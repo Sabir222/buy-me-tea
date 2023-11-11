@@ -10,6 +10,13 @@ const helmet = require("helmet");
 require("dotenv").config();
 const PORT = 8080;
 import passport from "./config/passport";
+app.use(helmet());
+
+const corsOptions = {
+  origin: "http://localhost:3000",
+  credentials: true,
+};
+app.use(cors(corsOptions));
 
 /*
  *
@@ -28,8 +35,7 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(helmet());
-app.use(cors());
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

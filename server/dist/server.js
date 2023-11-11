@@ -15,6 +15,12 @@ const helmet = require("helmet");
 require("dotenv").config();
 const PORT = 8080;
 const passport_1 = __importDefault(require("./config/passport"));
+app.use(helmet());
+const corsOptions = {
+    origin: "http://localhost:3000",
+    credentials: true,
+};
+app.use(cors(corsOptions));
 /*
  *
  *
@@ -30,8 +36,6 @@ app.use(session({
 }));
 app.use(passport_1.default.initialize());
 app.use(passport_1.default.session());
-app.use(helmet());
-app.use(cors());
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 app.use((req, res, next) => {

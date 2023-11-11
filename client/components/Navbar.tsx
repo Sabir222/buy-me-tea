@@ -11,7 +11,18 @@ const Navbar = () => {
   const [logged, setLogged] = useState({});
   const isAuth = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/checkAuth");
+      const config = {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      const response = await axios.get(
+        "http://localhost:8080/checkAuth",
+        config
+      );
+
+      console.log(response);
       if (response.status === 200) {
         setLogged(response.data);
       }

@@ -27,10 +27,7 @@ const prismadb_1 = __importDefault(require("../libs/prismadb"));
 router.post("/login", passport_1.default.authenticate("local", {
     failureRedirect: "/failed",
 }), (req, res) => {
-    res.json({
-        status: "success",
-        message: "Authentication successful",
-    });
+    res.json(req.user);
 });
 router.get("/login", (req, res) => {
     res.send("hello login route");
